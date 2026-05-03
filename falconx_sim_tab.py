@@ -180,13 +180,38 @@ def render_falconx_sim_tab():
         launch_notional_mm = st.select_slider("Launch", options=[1, 2, 3, 5], value=3,
                                               key="sim_launch", label_visibility="collapsed")
     with ctl3:
-        st.markdown("<div class='ctrl-vd-label' style='margin-bottom:6px;'>Data Mode</div>", unsafe_allow_html=True)
-        live_data = st.toggle(
-            "Live data" if _live_default else "Sample data",
-            value=_live_default,
-            help="ON = polls Kalshi live CPI feed. OFF = cached / sample snapshot.",
-            key="sim_live_data",
+        st.markdown(
+            "<div class='ctrl-vd-label' style='margin-bottom:6px;'>Data Source</div>",
+            unsafe_allow_html=True,
         )
+        live_data = st.toggle(
+            "Live data feed",
+            value=_live_default,
+            help="ON = polls Kalshi live CPI feed. OFF = sample / cached snapshot.",
+            key="sim_live_data",
+            label_visibility="collapsed",
+        )
+        # Status chip below the toggle so the current data source is
+        # always visually obvious — gold dot + "LIVE FEED" when on,
+        # muted grey + "SAMPLE / CACHED" when off. Matches the app's
+        # existing nav-badge / kicker design language.
+        if live_data:
+            status_html = (
+                "<div style='font-size:0.6rem;color:#D4A85A;"
+                "letter-spacing:0.16em;text-transform:uppercase;"
+                "margin-top:6px;font-weight:500;'>"
+                "<span style='color:#7AC974;'>&#9679;</span> Live Kalshi feed"
+                "</div>"
+            )
+        else:
+            status_html = (
+                "<div style='font-size:0.6rem;color:#8fa3b8;"
+                "letter-spacing:0.16em;text-transform:uppercase;"
+                "margin-top:6px;font-weight:500;'>"
+                "<span style='color:#5a6a80;'>&#9675;</span> Sample &middot; cached"
+                "</div>"
+            )
+        st.markdown(status_html, unsafe_allow_html=True)
     with ctl4:
         st.markdown("<div class='ctrl-vd-label' style='margin-bottom:6px;'>&nbsp;</div>", unsafe_allow_html=True)
         refresh = st.checkbox("Refresh venue snapshot", value=False, key="sim_refresh",
