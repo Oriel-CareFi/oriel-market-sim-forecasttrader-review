@@ -8,7 +8,7 @@
 >
 > **Review deployment (public, password-gated):** `https://oriel-market-sim-forecasttrader.streamlit.app`
 
-Simulation + demo layer for CPI relative value AND medical-CPI-vs-CPI basis trades — designed for the ForecastTrader / ForecastEx review and the original FalconX discussion.
+Simulation + demo layer for CPI relative value AND medical-CPI-vs-CPI basis trades — designed for market venue review and liquidity provider discussion.
 
 **FalconX live demo:** [oriel-market-sim.streamlit.app](https://oriel-market-sim.streamlit.app/)
 
@@ -113,4 +113,4 @@ ui/                             Shared UI infrastructure (tokens, charts, tables
 
 ## Purpose
 
-Clean extension layer for discussing architecture, quoting model, venue normalization, and a $3MM launch package with FalconX before hard-wiring the oracle publisher and deployer stack.
+Clean extension layer for discussing architecture, quoting model, venue normalization, and a $3MM liquidity provdider launch package before hard-wiring the oracle publisher and deployer stack.
