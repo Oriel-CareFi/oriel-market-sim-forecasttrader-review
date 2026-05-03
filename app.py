@@ -48,11 +48,73 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ── Simulation Mode selector (styled as a segmented control) ─────────────────
+# We override Streamlit's default horizontal-radio look so the mode selector
+# matches the app's gold-accent design language: dark pill container, hidden
+# native radio circles, gold-tinted active option, muted inactive options.
+st.markdown(
+    """
+    <style>
+      /* Pill container around the two options */
+      [data-testid="stRadio"] > div[role="radiogroup"] {
+        flex-direction: row !important;
+        gap: 4px !important;
+        background: #0f1620 !important;
+        border: 1px solid #2a3a52 !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        display: inline-flex !important;
+      }
+      /* Each option becomes a button-like pill */
+      [data-testid="stRadio"] label[data-baseweb="radio"] {
+        padding: 9px 22px !important;
+        border-radius: 7px !important;
+        cursor: pointer !important;
+        transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s !important;
+        font-size: 0.78rem !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.04em !important;
+        color: #8fa3b8 !important;
+        margin: 0 !important;
+        border: 1px solid transparent !important;
+      }
+      /* Hide the native radio circle */
+      [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child,
+      [data-testid="stRadio"] label[data-baseweb="radio"] [role="radio"] {
+        display: none !important;
+      }
+      /* Hover state */
+      [data-testid="stRadio"] label[data-baseweb="radio"]:hover {
+        color: #E6EDF3 !important;
+        background: rgba(212, 168, 90, 0.05) !important;
+      }
+      /* Active (selected) — gold accent */
+      [data-testid="stRadio"] label[data-baseweb="radio"]:has(input[aria-checked="true"]),
+      [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) {
+        background: linear-gradient(135deg, rgba(212,168,90,0.18) 0%, rgba(212,168,90,0.08) 100%) !important;
+        color: #D4A85A !important;
+        border-color: rgba(212,168,90,0.35) !important;
+        box-shadow: 0 1px 8px rgba(212,168,90,0.12), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+      }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    "<div style='font-size:0.62rem;color:#8fa3b8;letter-spacing:0.16em;"
+    "text-transform:uppercase;margin:14px 0 8px;font-weight:500;'>"
+    "Simulation Mode"
+    "</div>",
+    unsafe_allow_html=True,
+)
+
 mode = st.radio(
     "Simulation Mode",
     ["General CPI RV", "Medical CPI vs CPI Basis"],
     horizontal=True,
     key="simulation_mode_selector",
+    label_visibility="collapsed",
     help="Switch between the existing CPI relative-value simulation and the new medical-inflation-vs-CPI basis mode.",
 )
 
