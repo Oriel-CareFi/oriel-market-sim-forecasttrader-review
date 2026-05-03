@@ -1,13 +1,13 @@
 """
-Oriel Market Simulation — CPI Curve & Perp Pilot
-Standalone Streamlit instance for FalconX demo.
+Oriel Market Simulation — CPI RV + Medical CPI Basis Pilot
+Standalone Streamlit instance for ForecastTrader review.
 """
 from __future__ import annotations
 
 import streamlit as st
 
 st.set_page_config(
-    page_title="Oriel Market Simulation \u2014 CPI Curve & Perp Pilot",
+    page_title="Oriel Market Simulation — CPI RV + Medical CPI Basis",
     page_icon="\u25c8",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -34,17 +34,29 @@ if review_build_gate_enabled() and not check_review_password():
     st.stop()
 
 from falconx_sim_tab import render_falconx_sim_tab
+from medical_cpi_basis_sim_tab import render_medical_cpi_basis_sim_tab
 
 st.markdown("""
 <div class='oriel-page-head'>
   <span class='oriel-page-title'>Oriel Market Simulation</span>
-  <span class='version-chip'>CPI Curve & Perp Pilot</span>
+  <span class='version-chip'>CPI RV + Medical CPI Basis</span>
 </div>""", unsafe_allow_html=True)
 
 st.markdown(
     "<div style='font-size:0.75rem;color:#6b7f94;margin:4px 0 10px;'>"
-    "Simulation + demo layer for Hyperliquid CPI perp listing. Live venue ingestion, dislocation analytics, backtest engine.</div>",
+    "Execution-intelligence console for CPI relative value and medical-inflation-vs-CPI basis trades. Live venue ingestion, dislocation analytics, backtest engine, and ScaleTrader-style templates.</div>",
     unsafe_allow_html=True,
 )
 
-render_falconx_sim_tab()
+mode = st.radio(
+    "Simulation Mode",
+    ["General CPI RV", "Medical CPI vs CPI Basis"],
+    horizontal=True,
+    key="simulation_mode_selector",
+    help="Switch between the existing CPI relative-value simulation and the new medical-inflation-vs-CPI basis mode.",
+)
+
+if mode == "Medical CPI vs CPI Basis":
+    render_medical_cpi_basis_sim_tab()
+else:
+    render_falconx_sim_tab()

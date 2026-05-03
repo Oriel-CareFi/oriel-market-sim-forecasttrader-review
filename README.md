@@ -1,8 +1,42 @@
-# Oriel Market Simulation — CPI Curve & Perp Pilot
+# Oriel Market Simulation — v1.12-ft-review.0
 
-Simulation + demo layer for the Hyperliquid CPI perp listing. Designed for the FalconX discussion — not a fork of the core Oriel app.
+> **This branch is the public review mirror for ForecastEx / ForecastTrader external review.**
+> Same code as the source `0NE-C0DEMAN/oriel-market-sim` repo, plus three additions:
+>   * `services/review_password_gate.py` — in-app password gate (activates when Streamlit Secret `REVIEW_BUILD = "true"`)
+>   * `falconx_sim_tab.py` Live-data toggle — defaults OFF in review build, ON in production
+>   * Mode 2: **Medical CPI vs CPI Basis** simulation, selectable from a top-level radio
+>
+> **Review deployment (public, password-gated):** `https://oriel-market-sim-forecasttrader.streamlit.app`
 
-**Live demo:** [oriel-market-sim.streamlit.app](https://oriel-market-sim.streamlit.app/)
+Simulation + demo layer for CPI relative value AND medical-CPI-vs-CPI basis trades — designed for the ForecastTrader / ForecastEx review and the original FalconX discussion.
+
+**FalconX live demo:** [oriel-market-sim.streamlit.app](https://oriel-market-sim.streamlit.app/)
+
+---
+
+## Simulation Modes (top-level radio)
+
+```
+Simulation Mode:   [ General CPI RV ]   [ Medical CPI vs CPI Basis ]
+```
+
+### Mode 1 — General CPI RV
+The original CPI relative-value simulation: three-venue ingestion (Kalshi / Polymarket / ForecastEx), cross-venue dislocation analytics, market-making backtest, ScaleTrader-style execution template.
+
+### Mode 2 — Medical CPI vs CPI Basis (new)
+Illustrative contract: `Medical CPI YoY − CPI-U YoY > threshold`. Walks through:
+
+| Section | What it shows |
+|---|---|
+| Headline assumptions | CPI-U YoY + four medical-CPI proxy components (hospital services, physician services, prescription drugs, other medical) with adjustable proxy weights |
+| Contract spec | Basis threshold + market YES price + confidence / liquidity scores |
+| Position sizing | Clip size, max position, starting inventory |
+| Fair value | Modeled fair YES probability and edge vs market price |
+| Distribution | Simulated basis distribution with probability of finishing above threshold |
+| Diagnostics | PnL / EV per trade |
+| Execution template | ScaleTrader-style basis ticket |
+
+Mode 2 source: `medical_cpi_basis_sim_tab.py` (pure-function compute layer + Streamlit UI). Smoke tests in `tests/test_medical_cpi_basis_sim.py`.
 
 ---
 
@@ -10,10 +44,11 @@ Simulation + demo layer for the Hyperliquid CPI perp listing. Designed for the F
 
 ```bash
 pip install -r requirements.txt
+python -m pytest tests/test_medical_cpi_basis_sim.py
 streamlit run app.py
 ```
 
-## What it does
+## What Mode 1 (General CPI RV) does
 
 - **Three-venue live ingestion (US headline CPI only)**: Kalshi (`KXCPI` series), Polymarket (Gamma API, non-US inflation markets excluded via `exclude_country_keywords`), ForecastEx (CSV pairs feed, `CPIY_` product prefix — filters out Canada/HK/Japan/India/Spain/Singapore/Germany/US-Core)
 - **Core Oriel curve wiring (default reference)**: the sim loads `data/oriel_curve_current.csv` exported from the core Oriel app and uses it as the reference for venue dislocation. Local venue-blend is still computed and shown as a diagnostic alongside the core curve so the dislocation can be decomposed into *real market-structure* versus *reference-construction artifact*.
